@@ -1,0 +1,402 @@
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CrownSMP</title>
+  <style>
+    :root{
+      --glass: rgba(10,10,12,.55);
+      --glass2: rgba(10,10,12,.35);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --shadow: 0 24px 80px rgba(0,0,0,.55);
+
+      --gold1: #ffe08a;
+      --gold2: #ffb400;
+      --gold3: #d18b00;
+      --iron1: #e9eef7;
+      --iron2: #aab3c2;
+      --iron3: #6b7380;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      overflow:hidden;
+      background:#000;
+    }
+
+    /* Background */
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(1200px 800px at 50% 30%, rgba(255,210,90,.12), transparent 55%),
+        radial-gradient(900px 600px at 20% 80%, rgba(120,180,255,.10), transparent 60%),
+        url("images/bg.png") center/cover no-repeat;
+      transform: scale(1.05);
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .bg::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.35) 40%, rgba(0,0,0,.70) 100%);
+    }
+
+    /* Subtle particles */
+    .stars{
+      position:fixed; inset:-30px;
+      pointer-events:none;
+      opacity:.55;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.25), transparent 55%),
+        radial-gradient(2px 2px at 70% 20%, rgba(255,255,255,.18), transparent 55%),
+        radial-gradient(2px 2px at 80% 75%, rgba(255,255,255,.20), transparent 55%),
+        radial-gradient(1.5px 1.5px at 35% 80%, rgba(255,255,255,.18), transparent 55%),
+        radial-gradient(1.5px 1.5px at 55% 55%, rgba(255,255,255,.16), transparent 55%),
+        radial-gradient(1.5px 1.5px at 10% 70%, rgba(255,255,255,.14), transparent 55%);
+      animation: drift 14s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+    @keyframes drift{
+      0%{ transform: translate3d(0,0,0) scale(1); }
+      50%{ transform: translate3d(10px,-8px,0) scale(1.01); }
+      100%{ transform: translate3d(0,0,0) scale(1); }
+    }
+
+    /* Layout */
+    .wrap{
+      position:relative;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 20px;
+    }
+    .card{
+      width:min(720px, 92vw);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--glass) 0%, var(--glass2) 100%);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+    .card-inner{
+      padding: 22px 20px 20px;
+      display:grid;
+      gap: 16px;
+      justify-items:center;
+      text-align:center;
+    }
+
+    .logo{
+      width: min(440px, 82vw);
+      height:auto;
+      filter: drop-shadow(0 18px 26px rgba(0,0,0,.55));
+      transform: translateZ(0);
+    }
+    .sub{
+      margin-top:-6px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+      max-width: 58ch;
+    }
+
+    .btn-row{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      justify-content:center;
+      padding-top: 4px;
+    }
+
+    /* Cool CSS buttons */
+    .btn{
+      position:relative;
+      border: 0;
+      cursor:pointer;
+      padding: 12px 16px;
+      border-radius: 14px;
+      min-width: 170px;
+      color: rgba(255,255,255,.92);
+      font-weight: 750;
+      letter-spacing: .3px;
+      font-size: 14px; /* smaller UI */
+      text-transform: uppercase;
+      background: rgba(255,255,255,.06);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.10);
+      transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+      user-select:none;
+      overflow:hidden;
+      outline:none;
+    }
+
+    /* shiny sweep */
+    .btn::before{
+      content:"";
+      position:absolute;
+      top:-40%;
+      left:-60%;
+      width: 50%;
+      height: 180%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+      transform: rotate(18deg);
+      filter: blur(.2px);
+      opacity:.0;
+      transition: left .35s ease, opacity .2s ease;
+      pointer-events:none;
+    }
+    .btn:hover::before{
+      left: 120%;
+      opacity: .9;
+    }
+
+    /* glowing edge */
+    .btn::after{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: 14px;
+      background: radial-gradient(160px 60px at 50% 0%, rgba(255,255,255,.18), transparent 60%);
+      opacity:.55;
+      pointer-events:none;
+    }
+
+    .btn:hover{
+      transform: translateY(-2px);
+      box-shadow:
+        0 22px 55px rgba(0,0,0,.65),
+        inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .btn:active{
+      transform: translateY(0px) scale(.99);
+    }
+    .btn:focus-visible{
+      box-shadow:
+        0 22px 55px rgba(0,0,0,.65),
+        0 0 0 3px rgba(255,215,0,.22),
+        inset 0 1px 0 rgba(255,255,255,.12);
+    }
+
+    /* Variants */
+    .btn-join{
+      background: linear-gradient(180deg, rgba(255,200,80,.25), rgba(110,70,0,.18));
+      border-color: rgba(255,200,80,.20);
+    }
+    .btn-join .btn-top{
+      background: linear-gradient(90deg, var(--gold1), var(--gold2), var(--gold3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.5));
+    }
+
+    .btn-about{
+      background: linear-gradient(180deg, rgba(210,220,240,.22), rgba(60,70,90,.18));
+      border-color: rgba(210,220,240,.18);
+    }
+    .btn-about .btn-top{
+      background: linear-gradient(90deg, var(--iron1), var(--iron2), var(--iron3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.5));
+    }
+
+    .btn small{
+      display:block;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 650;
+      text-transform:none;
+      letter-spacing: 0;
+      color: rgba(255,255,255,.70);
+    }
+
+    .footer{
+      width:100%;
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding: 12px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,.60);
+    }
+    .pill{
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 50;
+    }
+    .modal.show{ display:flex; }
+
+    .modal-box{
+      width:min(620px, 94vw);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(18,18,22,.92), rgba(10,10,12,.88));
+      box-shadow: 0 30px 90px rgba(0,0,0,.7);
+      overflow:hidden;
+    }
+    .modal-head{
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .modal-title{
+      font-weight: 650;
+      letter-spacing: .2px;
+      font-size: 14px;
+    }
+    .close{
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.85);
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor:pointer;
+      font-size: 12px;
+    }
+    .close:hover{ background: rgba(255,255,255,.10); }
+    .modal-body{
+      padding: 14px 16px 16px;
+      color: rgba(255,255,255,.80);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .stars{ animation:none; }
+      .btn{ transition:none; }
+      .btn::before{ display:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true" style="transform: scale(1.05) translate(4.88278px, -2.62011px);"></div>
+  <div class="stars" aria-hidden="true"></div>
+
+  <main class="wrap">
+    <section class="card" role="region" aria-label="CrownSMP">
+      <div class="card-inner">
+        <img class="logo" src="images/CrownSMP.png" alt="CrownSMP">
+
+        <div class="sub">
+          Click <b>Join Server</b> to go to the server page. Click <b>About</b> for info.
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-join" id="joinBtn" type="button" aria-label="Join Server">
+            <span class="btn-top">Add Server</span>
+            <small>Add Server To Server List</small>
+          </button>
+
+          <button class="btn btn-about" id="aboutBtn" type="button" aria-label="About">
+            <span class="btn-top">About</span>
+            <small>Server info &amp; rules</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="pill">Status: Online-ready</div>
+        <div class="pill">Theme: Gold / Iron</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- About Modal -->
+  <div class="modal" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-title" id="aboutTitle">About CrownSMP</div>
+        <button class="close" id="closeAbout" type="button">Close</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          <b>CrownSMP</b> is a Minecraft server with a golden “crown” theme.
+        </p>
+        <p><b>Server Rules:</b><br>
+
+- No hacking, cheating, or any form of chat commands<br>
+- Always have fun :)</p>
+        <p><b>Join With IP:</b><br>If the automatic join button doesnt work on your device, you may connect with the ip and port.<br><br>IP: </p><p style="margin:0; opacity:.85;">
+          <b>Tip:</b> Press <b>Esc</b> to close this window.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Leave "67kid420" as the destination (your requested placeholder)
+    const JOIN_DESTINATION = "minecraft://?addExternalServer=§6CrownSMP|CrownSMP-123.aternos.me:27336";
+
+    const joinBtn = document.getElementById("joinBtn");
+    const aboutBtn = document.getElementById("aboutBtn");
+    const modal = document.getElementById("aboutModal");
+    const closeAbout = document.getElementById("closeAbout");
+
+    // Simple parallax based on mouse movement
+    const bg = document.querySelector(".bg");
+    window.addEventListener("mousemove", (e) => {
+      const x = (e.clientX / window.innerWidth) - 0.5;
+      const y = (e.clientY / window.innerHeight) - 0.5;
+      bg.style.transform = `scale(1.05) translate(${x * 10}px, ${y * 8}px)`;
+    }, { passive: true });
+
+    joinBtn.addEventListener("click", () => {
+      window.location.href = JOIN_DESTINATION;
+    });
+
+    function openModal(){
+      modal.classList.add("show");
+      closeAbout.focus();
+    }
+    function closeModal(){
+      modal.classList.remove("show");
+      aboutBtn.focus();
+    }
+
+    aboutBtn.addEventListener("click", openModal);
+    closeAbout.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("show")) closeModal();
+    });
+
+    // Preload background/logo
+    ["images/bg.png","images/CrownSMP.png"].forEach(src => { const i = new Image(); i.src = src; });
+  </script>
+
+
+</body></html>
